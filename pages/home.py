@@ -58,7 +58,7 @@ def show_home():
     st.subheader("What would you like to do?")
     st.write("")
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
         feature_card(
             "Mind",
@@ -71,8 +71,6 @@ def show_home():
             "Reflect on your day with prompts based on your mood and past entries.",
             "card_journal", "Journal"
         )
-
-    col3, col4 = st.columns(2)
     with col3:
         feature_card(
             "Habits",
