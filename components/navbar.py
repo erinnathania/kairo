@@ -3,7 +3,7 @@ import streamlit as st
 
 def show_navbar():
     current = st.session_state.get("page", "Home")
-    pages = ["Home", "Mind", "Journal", "Habits", "Badges", "Daily Summary"]
+    pages = ["Home", "Mind", "Journal", "Habits", "Badges", "Companion", "Daily Summary"]
 
     col_logo, col_nav, col_profile = st.columns([1, 7, 1])
 

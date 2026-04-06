@@ -6,6 +6,7 @@ from pages.habits import show_habits
 from pages.summary import show_summary
 from pages.profile import show_profile
 from pages.badges_page import show_badges
+from pages.pet_page import show_pet
 
 st.set_page_config(page_title="Kairo", page_icon=None, layout="wide")
 
@@ -44,6 +45,8 @@ elif page == "Daily Summary":
     show_summary()
 elif page == "Badges":
     show_badges()
+elif page == "Companion":
+    show_pet()
 elif page == "Profile":
     show_profile()
 elif page == "Settings":

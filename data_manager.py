@@ -138,3 +138,59 @@ def get_habit_streak(habit_name):
         else:
             break
     return streak
+
+
+# ── PET ─────────────────────────────────────────────────
+
+def save_pet(pet_data):
+    ensure_data_dir()
+    with open(f"{DATA_DIR}/pet.json", "w") as f:
+        json.dump(pet_data, f, indent=2)
+
+
+def load_pet():
+    try:
+        with open(f"{DATA_DIR}/pet.json", "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def get_pet_stats():
+    """Calculate pet stats from today's user activity."""
+    today = date.today().isoformat()
+    moods = load_mood_history()
+    journal = load_journal_entries()
+    habits = load_habits()
+    habit_logs = get_todays_habit_logs()
+
+    # Energy: based on total actions taken today
+    todays_checkins = sum(1 for m in moods if m["date"] == today)
+    todays_entries = sum(1 for j in journal if j["date"] == today)
+    todays_habits_done = sum(1 for v in habit_logs.values() if v)
+    total_actions = todays_checkins + todays_entries + todays_habits_done
+    energy = min(total_actions * 20, 100)
+
+    # Mood: based on mood score consistency (average of recent scores)
+    recent_moods = [m["mood_score"] for m in moods[-7:]]
+    if recent_moods:
+        mood = int(sum(recent_moods) / len(recent_moods) * 10)
+        mood = min(mood, 100)
+    else:
+        mood = 0
+
+    # Growth: based on habit completion rate over the past 7 days
+    all_logs = load_all_habit_logs()
+    if habits:
+        week_dates = [(date.today() - timedelta(days=i)).isoformat() for i in range(7)]
+        completed = 0
+        possible = 0
+        for d in week_dates:
+            day_logs = all_logs.get(d, {})
+            possible += len(habits)
+            completed += sum(1 for h in habits if day_logs.get(h["name"], False))
+        growth = int(completed / possible * 100) if possible > 0 else 0
+    else:
+        growth = 0
+
+    return {"energy": energy, "mood": mood, "growth": growth}
